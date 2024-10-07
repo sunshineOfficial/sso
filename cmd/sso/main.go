@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
+	"os/signal"
 	"sso/internal/app"
 	"sso/internal/config"
+	"syscall"
 )
 
 const (
@@ -18,9 +21,22 @@ func main() {
 
 	log := setupLogger(cfg.Env)
 
-	application := app.New(log, cfg.GRPC.Port, cfg.Postgres.ConnectionString, cfg.TokenTTL)
+	mainCtx, cancelMainCtx := context.WithCancel(context.Background())
+	defer cancelMainCtx()
 
-	application.GRPCServer.MustRun()
+	application := app.New(mainCtx, log, cfg.GRPC.Port, cfg.Postgres.ConnectionString, cfg.TokenTTL)
+
+	go func() {
+		application.MustRun()
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+
+	<-stop
+
+	application.Stop()
+	log.Info("Gracefully stopped")
 }
 
 func setupLogger(env string) *slog.Logger {

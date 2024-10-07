@@ -4,26 +4,34 @@ import (
 	"context"
 	"log/slog"
 	grpcapp "sso/internal/app/grpc"
+	storageapp "sso/internal/app/storage"
 	"sso/internal/services/auth"
-	"sso/internal/storage/postgres"
 	"time"
 )
 
 type App struct {
-	GRPCServer *grpcapp.App
+	storageApp *storageapp.App
+	gRPCServer *grpcapp.App
 }
 
-func New(log *slog.Logger, grpcPort int, connectionString string, tokenTTL time.Duration) *App {
-	storage, err := postgres.New(context.Background(), connectionString)
-	if err != nil {
-		panic(err)
-	}
+func New(ctx context.Context, log *slog.Logger, grpcPort int, connectionString string, tokenTTL time.Duration) *App {
+	storageApp := storageapp.New(ctx, log, connectionString)
 
-	authService := auth.New(log, storage, storage, storage, tokenTTL)
+	authService := auth.New(log, storageApp.Storage, storageApp.Storage, storageApp.Storage, tokenTTL)
 
 	grpcApp := grpcapp.New(log, authService, grpcPort)
 
 	return &App{
-		GRPCServer: grpcApp,
+		storageApp: storageApp,
+		gRPCServer: grpcApp,
 	}
+}
+
+func (a *App) MustRun() {
+	a.gRPCServer.MustRun()
+}
+
+func (a *App) Stop() {
+	a.gRPCServer.Stop()
+	a.storageApp.MustStop()
 }

@@ -66,6 +66,14 @@ func (a *App) Run() error {
 	return nil
 }
 
+func (a *App) Stop() {
+	const op = "grpcapp.Stop"
+
+	a.log.With(slog.String("op", op)).Info("stopping gRPC server", slog.Int("port", a.port))
+
+	a.gRPCServer.GracefulStop()
+}
+
 func InterceptorLogger(l *slog.Logger) logging.Logger {
 	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
 		l.Log(ctx, slog.Level(lvl), msg, fields...)

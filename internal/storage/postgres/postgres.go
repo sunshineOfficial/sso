@@ -36,6 +36,16 @@ func New(ctx context.Context, connectionString string) (*Storage, error) {
 	return &Storage{db: db}, nil
 }
 
+func (s *Storage) Stop() error {
+	const op = "storage.postgres.Stop"
+
+	if err := s.db.Close(); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
+
 //go:embed sql/save_user.sql
 var saveUserSql string
 
