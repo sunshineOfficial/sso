@@ -2,6 +2,12 @@
 ## explicit; go 1.16
 github.com/BurntSushi/toml
 github.com/BurntSushi/toml/internal
+# github.com/brianvoe/gofakeit v2.2.0+incompatible
+## explicit
+github.com/brianvoe/gofakeit
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/golang-jwt/jwt/v5 v5.2.1
 ## explicit; go 1.18
 github.com/golang-jwt/jwt/v5
@@ -68,6 +74,13 @@ github.com/joho/godotenv
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
+# github.com/stretchr/testify v1.9.0
+## explicit; go 1.17
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
 # github.com/sunshineOfficial/protos v0.0.0-20241006093318-c44c3e46a827
 ## explicit; go 1.23.1
 github.com/sunshineOfficial/protos/gen/go/sso

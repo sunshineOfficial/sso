@@ -1,0 +1,6 @@
+env: "local"
+grpc:
+  port: 44044
+  timeout: 5s
+postgres:
+  connection_string: "postgres://postgres:1@db/sso"

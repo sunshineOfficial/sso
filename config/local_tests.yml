@@ -1,4 +1,4 @@
-env: "local"
+env: "prod"
 grpc:
   port: 44044
   timeout: 10h

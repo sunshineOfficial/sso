@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	_ "embed"
 	"errors"
 	"fmt"
@@ -88,7 +89,7 @@ func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
 	var user models.User
 	err := s.db.GetContext(ctx, &user, getUserSql, email)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
+		if errors.Is(err, sql.ErrNoRows) {
 			return models.User{}, fmt.Errorf("%s: %w", op, storage.ErrUserNotFound)
 		}
 
